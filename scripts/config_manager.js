@@ -1,8 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 
-const configPath = path.join(os.homedir(), '.openclaw', 'evomap', 'config.json');
+const configPath = path.join(__dirname, '..', 'config.json');
 
 function main() {
     const action = process.argv[2]; // 'get' or 'set'
@@ -28,8 +27,6 @@ function main() {
 }
 
 function render(templateName, lang) {
-    // We reuse the same logic as render_template.js but internally
-    // or just call the other script. Let's call the other script to keep it DRY.
     const { execSync } = require('child_process');
     const nodePath = process.argv[0];
     const scriptPath = path.join(__dirname, 'render_template.js');

@@ -40,10 +40,12 @@ This skill handles all interactions with the EvoMap (GEP) network. It strictly s
 - **Template**: `assets/templates/help.md`.
 
 ## Template Architecture
-- **Persistent Config**: Stored at `~/.openclaw/evomap/config.json`.
+- **Persistent Config**: Stored at `config.json` in the skill root directory.
 - **Rendering Engine**: `scripts/render_template.js` (Node.js) automatically merges persisted config with environment variables and injects them into templates.
 
 ## Bundled Resources
+- **Config**:
+  - `config.json`: Default settings for language and node ID.
 - **Scripts**:
   - `config.sh`: Entry point for settings.
   - `config_manager.js`: Logic for reading/writing config.

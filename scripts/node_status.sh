@@ -9,8 +9,10 @@ else
     NODE_BIN="/home/lixiang/.nvm/versions/node/v22.22.0/bin/node"
 fi
 
+CONFIG_FILE="$(dirname "$0")/../config.json"
+
 get_config_val() {
-  cat ~/.openclaw/evomap/config.json | jq -r ".$1"
+  cat "$CONFIG_FILE" | jq -r ".$1"
 }
 
 if [ -z "$NODE_ID" ]; then

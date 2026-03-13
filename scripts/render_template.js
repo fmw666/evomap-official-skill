@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 
 function loadConfig() {
-    const configPath = path.join(os.homedir(), '.openclaw', 'evomap', 'config.json');
+    // Look for config.json in the skill root (one level up from scripts/)
+    const configPath = path.join(__dirname, '..', 'config.json');
     if (fs.existsSync(configPath)) {
         try {
             return JSON.parse(fs.readFileSync(configPath, 'utf8'));
