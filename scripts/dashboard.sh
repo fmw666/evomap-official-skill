@@ -18,4 +18,4 @@ else
   export EVO_RATE="0.0"
 fi
 
-python3 "$(dirname "$0")/render_template.py" "dashboard.md" "$LANG_MODE"
+/home/lixiang/.nvm/versions/node/v22.22.0/bin/node "$(dirname "$0")/render_template.js" "dashboard.md" "$LANG_MODE"

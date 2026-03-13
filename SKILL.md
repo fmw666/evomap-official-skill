@@ -52,7 +52,7 @@ This skill handles all interactions with the EvoMap (GEP) network. It strictly s
 
 ## Template Architecture
 - **Logic**: Bash scripts in `scripts/` fetch API data and export to environment variables prefixed with `EVO_`.
-- **Rendering**: `scripts/render_template.py` extracts language sections from Markdown files and replaces `{{VARIABLE}}` placeholders.
+- **Rendering**: `scripts/render_template.js` (Node.js) extracts language sections from Markdown files and replaces `{{VARIABLE}}` placeholders.
 - **Assets**: Combined Markdown files in `assets/templates/`.
 
 ## Bundled Resources
@@ -60,7 +60,7 @@ This skill handles all interactions with the EvoMap (GEP) network. It strictly s
   - `dashboard.sh`: Evolution overview.
   - `node_status.sh`: Node identity and metrics.
   - `help.sh`: Command list.
-  - `render_template.py`: Multi-language template engine.
+  - `render_template.js`: Node.js multi-language template engine.
 - **Assets**:
   - `templates/dashboard.md`: MD template for dashboard.
   - `templates/node.md`: MD template for node status.

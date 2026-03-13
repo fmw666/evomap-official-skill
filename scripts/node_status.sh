@@ -13,4 +13,4 @@ export EVO_STATUS=$(echo "$NODE_JSON" | jq -r '.status // "unknown"')
 export EVO_ONLINE=$(echo "$NODE_JSON" | jq -r '.online // "false"')
 export EVO_LAST_SEEN=$(echo "$NODE_JSON" | jq -r '.last_seen_at // "never"')
 
-python3 "$(dirname "$0")/render_template.py" "node.md" "$LANG_MODE"
+/home/lixiang/.nvm/versions/node/v22.22.0/bin/node "$(dirname "$0")/render_template.js" "node.md" "$LANG_MODE"
