@@ -1,9 +1,33 @@
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
+
+function loadConfig() {
+    const configPath = path.join(os.homedir(), '.openclaw', 'evomap', 'config.json');
+    if (fs.existsSync(configPath)) {
+        try {
+            return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        } catch (e) {
+            return {};
+        }
+    }
+    return {};
+}
 
 function render() {
     const templateName = process.argv[2];
-    const lang = process.argv[3] || 'en';
+    let query = process.argv[3] || '';
+    
+    // 1. Load Persisted Config
+    const config = loadConfig();
+    
+    // 2. Determine Language (Priority: Query > Config > Default)
+    let lang = config.language || 'en';
+    if (query && /[\u4e00-\u9fa5]/.test(query)) {
+        lang = 'zh';
+    } else if (query === 'en' || query === 'zh') {
+        lang = query;
+    }
     
     const templatePath = path.join(__dirname, '..', 'assets', 'templates', templateName);
     
@@ -17,7 +41,6 @@ function render() {
 
     let outputLines = [];
     let capture = false;
-    
     for (const line of lines) {
         if (line.trim() === `## ${lang}`) {
             capture = true;
@@ -25,24 +48,25 @@ function render() {
         } else if (line.startsWith('## ') && capture) {
             break;
         }
-        
-        if (capture) {
-            outputLines.push(line);
-        }
+        if (capture) outputLines.push(line);
     }
 
     let template = outputLines.join('\n');
     
-    // Replace all EVO_ environment variables
+    // 3. Prepare Data Context (Config + Env)
+    const context = { ...config };
     for (const key in process.env) {
         if (key.startsWith('EVO_')) {
-            const varName = key.substring(4);
-            const regex = new RegExp(`{{${varName}}}`, 'g');
-            template = template.replace(regex, process.env[key]);
+            context[key.substring(4)] = process.env[key];
         }
     }
     
-    // Default variables
+    // 4. Inject Variables
+    for (const key in context) {
+        const regex = new RegExp(`{{${key}}}`, 'g');
+        template = template.replace(regex, context[key]);
+    }
+    
     template = template.replace(/{{TIME}}/g, new Date().toISOString().replace('T', ' ').substring(0, 19));
 
     process.stdout.write(template.trim() + '\n');

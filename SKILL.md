@@ -1,72 +1,54 @@
 ---
 name: evomap-official-skill
-description: EvoMap linkage and automation skill. Triggered by "evomap" keyword, slash commands (/dashboard, /node, /help, /global), or natural language intents. Provides real-time data from evomap.ai.
+description: EvoMap linkage and automation skill. Triggered by "evomap" keyword, slash commands (/dashboard, /node, /help, /config), or natural language intents.
 ---
 
 # EvoMap Official Skill
 
-This skill handles all interactions with the EvoMap (GEP) network. It strictly separates logic from visual presentation and enforces concise, template-based communication.
+This skill handles all interactions with the EvoMap (GEP) network. It strictly separates logic from visual presentation and uses a persistent configuration system.
 
 ## ⚠️ Absolute Output Law (MANDATORY)
-1. **ZERO Conversational Filler**: Do NOT output "Here is the result", "Sure", "Okay", or any other text before or after the template.
-2. **Template Only**: The final response MUST contain ONLY the rendered content of the corresponding template from `assets/templates/`.
-3. **No Fluff**: No conversational filler, no catchphrases, no status updates.
-4. **Clean Execution**: If the intent is identified as an EvoMap command, the model's entire output must be the result of the script/template.
+1. **ZERO Conversational Filler**: Do NOT output any conversational text.
+2. **Template Only**: The final response MUST contain ONLY the rendered content of the corresponding template.
+3. **Clean Execution**: Output the result of the script/template directly.
 
 ## Endpoints Definition
 
-### 1. Help & Commands
-- **Condition**: User wants to know available commands or needs help.
-- **Trigger**: `evomap /help`, `evomap 帮助`, `evomap help`
-- **Action**: Runs `scripts/help.sh [lang]`.
-- **Template**: `assets/templates/help.md`.
-- **Example**: `evomap /help zh`
+### 1. Configuration Management
+- **Condition**: User wants to view or change settings (e.g., language).
+- **Trigger**: `evomap /config [key] [value]`, `evomap 设置`
+- **Action**: Runs `scripts/config.sh [key] [value]`.
+- **Template**: `assets/templates/config.md` or `config_update.md`.
+- **Example**: `evomap /config language zh`
 
 ### 2. Dashboard View
 - **Condition**: User wants to see the overall status of the node and network.
-- **Trigger**: `evomap /dashboard [lang]`, `evomap 面板`, `进化看板`
-- **Action**: Runs `scripts/dashboard.sh [your_node_id] [lang]`. 
-- **Requirement**: The Agent must proactively identify its own `node_id` (e.g., from memory or config) and pass it as the first argument.
+- **Trigger**: `evomap /dashboard`, `evomap 面板`
+- **Action**: Runs `scripts/dashboard.sh [node_id] [query]`.
 - **Template**: `assets/templates/dashboard.md`.
-- **Example**: `evomap /dashboard zh`
 
 ### 3. Node Status
 - **Condition**: User wants detailed metrics for the current node.
-- **Trigger**: `evomap /node [lang]`, `evomap 节点`
-- **Action**: Runs `scripts/node_status.sh [your_node_id] [lang]`.
-- **Requirement**: The Agent must proactively identify its own `node_id` and pass it as the first argument. Users are NOT expected to type the ID manually.
+- **Trigger**: `evomap /node`, `evomap 节点`
+- **Action**: Runs `scripts/node_status.sh [node_id] [query]`.
 - **Template**: `assets/templates/node.md`.
-- **Example**: `evomap /node zh`
 
-### 4. Global Stats
-- **Condition**: User wants raw global network statistics.
-- **Trigger**: `evomap /global`, `evomap 全局`
-- **Action**: Runs `scripts/get_global_stats.sh`.
-- **Template**: Output directly (Raw JSON/Text).
-- **Example**: `evomap /global`
-
-### 5. Fallback (Intent Guessing)
-- **Condition**: User mentions "evomap" but no slash command or specific intent is recognized.
-- **Trigger**: Keyword "evomap" found but no command matches.
-- **Action**: Runs `scripts/fallback.sh [lang] [suggestions]`.
-- **Template**: `assets/templates/fallback.md`.
-- **Example**: `evomap 怎么用` -> Runs fallback with dashboard/help suggestions.
+### 4. Help & Commands
+- **Condition**: User needs instructions.
+- **Trigger**: `evomap /help`, `evomap 帮助`
+- **Action**: Runs `scripts/help.sh [query]`.
+- **Template**: `assets/templates/help.md`.
 
 ## Template Architecture
-- **Logic**: Bash scripts in `scripts/` fetch API data and export to environment variables prefixed with `EVO_`.
-- **Rendering**: `scripts/render_template.js` (Node.js) extracts language sections from Markdown files and replaces `{{VARIABLE}}` placeholders.
-- **Assets**: Combined Markdown files in `assets/templates/`.
+- **Persistent Config**: Stored at `~/.openclaw/evomap/config.json`.
+- **Rendering Engine**: `scripts/render_template.js` (Node.js) automatically merges persisted config with environment variables and injects them into templates.
 
 ## Bundled Resources
 - **Scripts**:
-  - `dashboard.sh`: Evolution overview.
-  - `node_status.sh`: Node identity and metrics.
-  - `help.sh`: Command list.
-  - `render_template.js`: Node.js multi-language template engine.
+  - `config.sh`: Entry point for settings.
+  - `config_manager.js`: Logic for reading/writing config.
+  - `render_template.js`: Core rendering engine.
+  - `dashboard.sh`, `node_status.sh`, `help.sh`: Functional commands.
 - **Assets**:
-  - `templates/dashboard.md`: MD template for dashboard.
-  - `templates/node.md`: MD template for node status.
-  - `templates/help.md`: MD template for help.
-  - `templates/fallback.md`: MD template for intent recognition.
-- **References**:
-  - `api_reference.md`: A2A protocol documentation.
+  - `templates/config.md`, `templates/config_update.md`: YAML-style config templates.
+  - `templates/dashboard.md`, `templates/node.md`, `templates/help.md`: Command templates.
