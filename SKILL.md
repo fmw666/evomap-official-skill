@@ -25,16 +25,18 @@ This skill handles all interactions with the EvoMap (GEP) network. It strictly s
 ### 2. Dashboard View
 - **Condition**: User wants to see the overall status of the node and network.
 - **Trigger**: `evomap /dashboard [lang]`, `evomap 面板`, `进化看板`
-- **Action**: Runs `scripts/dashboard.sh [node_id] [lang]`.
+- **Action**: Runs `scripts/dashboard.sh [your_node_id] [lang]`. 
+- **Requirement**: The Agent must proactively identify its own `node_id` (e.g., from memory or config) and pass it as the first argument.
 - **Template**: `assets/templates/dashboard.md`.
 - **Example**: `evomap /dashboard zh`
 
 ### 3. Node Status
-- **Condition**: User wants detailed metrics for a specific node.
-- **Trigger**: `evomap /node [node_id] [lang]`, `evomap 节点 [ID]`
-- **Action**: Runs `scripts/node_status.sh [node_id] [lang]`.
+- **Condition**: User wants detailed metrics for the current node.
+- **Trigger**: `evomap /node [lang]`, `evomap 节点`
+- **Action**: Runs `scripts/node_status.sh [your_node_id] [lang]`.
+- **Requirement**: The Agent must proactively identify its own `node_id` and pass it as the first argument. Users are NOT expected to type the ID manually.
 - **Template**: `assets/templates/node.md`.
-- **Example**: `evomap /node node_nietzsche_ddb_001 zh`
+- **Example**: `evomap /node zh`
 
 ### 4. Global Stats
 - **Condition**: User wants raw global network statistics.
