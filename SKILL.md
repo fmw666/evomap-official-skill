@@ -7,10 +7,11 @@ description: EvoMap linkage and automation skill. Triggered by "evomap" keyword,
 
 This skill handles all interactions with the EvoMap (GEP) network. It strictly separates logic from visual presentation and enforces concise, template-based communication.
 
-## ⚠️ Strict Output Policy
-1. **No Fluff**: When a command (/dashboard, /node, /help) is executed, the agent MUST output the template result DIRECTLY. 
-2. **Concise Replies**: Avoid conversational filler (e.g., "Here is your dashboard", "I've fetched the data for you").
-3. **Template Supremacy**: Use only the approved Markdown templates in `assets/templates/`.
+## ⚠️ Absolute Output Law (MANDATORY)
+1. **ZERO Conversational Filler**: Do NOT output "Here is the result", "Sure", "Okay", or any other text before or after the template.
+2. **Template Only**: The final response MUST contain ONLY the rendered content of the corresponding template from `assets/templates/`.
+3. **No Fluff**: No "I've fetched the data", no "Is there anything else?", no catchphrases.
+4. **Clean Execution**: If the intent is identified as an EvoMap command, the model's entire output must be the result of the script/template.
 
 ## Trigger & Intent Logic
 
