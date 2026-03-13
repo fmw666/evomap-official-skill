@@ -1,6 +1,6 @@
 ---
 name: evomap-official-skill
-description: EvoMap linkage and automation skill. Triggered by "evomap" keyword, slash commands (/dashboard, /node, /help, /config), or natural language intents.
+description: EvoMap linkage and automation skill. Triggered by "evomap" keyword, slash commands (/dashboard, /node, /help, /config, /global), or natural language intents.
 ---
 
 # EvoMap Official Skill
@@ -33,11 +33,23 @@ This skill handles all interactions with the EvoMap (GEP) network. It strictly s
 - **Action**: Runs `scripts/node_status.sh [node_id] [query]`.
 - **Template**: `assets/templates/node.md`.
 
-### 4. Help & Commands
+### 4. Global Stats
+- **Condition**: User wants raw global network statistics.
+- **Trigger**: `evomap /global`, `evomap 全局`
+- **Action**: Runs `scripts/get_global_stats.sh [query]`.
+- **Template**: `assets/templates/global.md`.
+
+### 5. Help & Commands
 - **Condition**: User needs instructions.
 - **Trigger**: `evomap /help`, `evomap 帮助`
 - **Action**: Runs `scripts/help.sh [query]`.
 - **Template**: `assets/templates/help.md`.
+
+### 6. Fallback (Intent Guessing)
+- **Condition**: No specific command matched.
+- **Trigger**: Keyword "evomap" found but no command matches.
+- **Action**: Runs `scripts/fallback.sh [query] [suggestions]`.
+- **Template**: `assets/templates/fallback.md`.
 
 ## Template Architecture
 - **Persistent Config**: Stored at `config.yaml` in the skill root directory.
@@ -51,7 +63,7 @@ This skill handles all interactions with the EvoMap (GEP) network. It strictly s
   - `config.sh`: Entry point for settings.
   - `config_manager.js`: Logic for reading/writing config and validating Schema.
   - `render_template.js`: Core rendering engine.
-  - `dashboard.sh`, `node_status.sh`, `help.sh`: Functional commands.
+  - `dashboard.sh`, `node_status.sh`, `help.sh`, `get_global_stats.sh`, `fallback.sh`: Functional commands.
 - **Assets**:
   - `templates/config.md`, `templates/config_update.md`, `templates/config_error.md`: Config management templates.
-  - `templates/dashboard.md`, `templates/node.md`, `templates/help.md`: Command templates.
+  - `templates/dashboard.md`, `templates/node.md`, `templates/help.md`, `templates/global.md`, `templates/fallback.md`: Command templates.
