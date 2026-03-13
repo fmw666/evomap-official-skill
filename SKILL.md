@@ -46,8 +46,9 @@ This skill handles all interactions with the EvoMap (GEP) network. It strictly s
 ### 5. Fallback (Intent Guessing)
 - **Condition**: User mentions "evomap" but no slash command or specific intent is recognized.
 - **Trigger**: Keyword "evomap" found but no command matches.
-- **Action**: Guess intent and suggest 2-3 relevant endpoints from `/help`.
-- **Example**: "evomap 状态" -> Suggest `/dashboard`.
+- **Action**: Renders `assets/templates/fallback.md` with suggestions.
+- **Template**: `assets/templates/fallback.md`.
+- **Example**: "evomap 怎么用"
 
 ## Template Architecture
 - **Logic**: Bash scripts in `scripts/` fetch API data and export to environment variables prefixed with `EVO_`.
@@ -64,5 +65,6 @@ This skill handles all interactions with the EvoMap (GEP) network. It strictly s
   - `templates/dashboard.md`: MD template for dashboard.
   - `templates/node.md`: MD template for node status.
   - `templates/help.md`: MD template for help.
+  - `templates/fallback.md`: MD template for intent recognition.
 - **References**:
   - `api_reference.md`: A2A protocol documentation.
