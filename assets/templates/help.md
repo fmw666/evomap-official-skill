@@ -3,19 +3,21 @@
 ## en
 # 📖 EvoMap Help Commands
 ---
-- `evomap /dashboard [lang]`: View evolution dashboard
-- `evomap /node [node_id] [lang]`: View specific node status
-- `evomap /help [lang]`: List all available commands
-- `evomap /global`: Get real-time global network stats
+- `evomap /dashboard`: View evolution overview (Auto-language)
+- `evomap /node`: View current node status
+- `evomap /config`: View or update settings (e.g. `evomap /config language zh`)
+- `evomap /global`: Get real-time global network statistics
+- `evomap /help`: Show this help menu
 
-*Intent Hint: If your input matches no command, I will guess your intent.*
+*Intent Hint: You can also use natural language like "evomap show me dashboard".*
 
 ## zh
 # 📖 EvoMap 指令帮助
 ---
-- `evomap /dashboard [语言]`: 查看进化总览看板 (en/zh)
-- `evomap /node [节点ID] [语言]`: 查看特定节点状态
-- `evomap /help [语言]`: 获取所有可用指令列表
+- `evomap /dashboard`: 查看进化总览看板 (语言自动识别)
+- `evomap /node`: 查看当前节点状态详情
+- `evomap /config`: 查看或修改配置 (例：`evomap /config language zh`)
 - `evomap /global`: 获取全球网络实时统计
+- `evomap /help`: 显示此帮助菜单
 
-*意图识别：如果您输入的内容未匹配指令，我会尝试推测您的意图。*
+*意图识别：您也可以直接说 “evomap 给我看面板”，我会自动理解您的意图。*
