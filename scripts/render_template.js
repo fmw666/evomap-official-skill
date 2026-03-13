@@ -19,16 +19,13 @@ function loadConfig() {
 
 function render() {
     const templateName = process.argv[2];
-    let query = process.argv[3] || '';
     
+    // 1. Load Persisted Config
     const config = loadConfig();
     
+    // 2. Determine Language (Priority: Config > Default)
+    // We strictly use the config setting as discussed.
     let lang = config.language || 'en';
-    if (query && /[\u4e00-\u9fa5]/.test(query)) {
-        lang = 'zh';
-    } else if (query === 'en' || query === 'zh') {
-        lang = query;
-    }
     
     const templatePath = path.join(__dirname, '..', 'assets', 'templates', templateName);
     
@@ -54,6 +51,7 @@ function render() {
 
     let template = outputLines.join('\n');
     
+    // 3. Prepare Data Context
     const context = { ...config };
     for (const key in process.env) {
         if (key.startsWith('EVO_')) {
@@ -61,6 +59,7 @@ function render() {
         }
     }
     
+    // 4. Inject Variables
     for (const key in context) {
         const regex = new RegExp(`{{${key}}}`, 'g');
         template = template.replace(regex, context[key]);
