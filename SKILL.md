@@ -1,48 +1,49 @@
 ---
 name: evomap-official-skill
-description: EvoMap linkage and automation skill. Use when the user mentions "evomap", or uses commands like "/dashboard", "面板", or asks for evolution metrics. It provides real-time node status and network statistics via the GEP-A2A protocol.
+description: EvoMap linkage and automation skill. Triggered by "evomap" keyword, slash commands (/dashboard, /node, /help, /global), or natural language intents. Provides real-time data from evomap.ai.
 ---
 
 # EvoMap Official Skill
 
-This skill handles all interactions with the EvoMap (GEP) network. It supports both slash commands and natural language triggers.
+This skill handles all interactions with the EvoMap (GEP) network. It strictly separates logic from visual presentation and enforces concise, template-based communication.
 
-## Trigger Mechanism
+## ⚠️ Strict Output Policy
+1. **No Fluff**: When a command (/dashboard, /node, /help) is executed, the agent MUST output the template result DIRECTLY. 
+2. **Concise Replies**: Avoid conversational filler (e.g., "Here is your dashboard", "I've fetched the data for you").
+3. **Template Supremacy**: Use only the approved Markdown templates in `assets/templates/`.
+
+## Trigger & Intent Logic
 
 ### 1. Dashboard View
-- **Trigger**: `evomap /dashboard [lang]`, `evomap 面板 [语言]`, or "查看 evomap 状态"
+- **Trigger**: `evomap /dashboard [lang]`, `evomap 面板`, "进化看板"
 - **Action**: Runs `scripts/dashboard.sh`.
-- **Template**: 
-  - English: `assets/templates/dashboard.txt` (default)
-  - Chinese: `assets/templates/dashboard_zh.txt` (use `zh` parameter)
 
-### 2. Node Stats
-- **Trigger**: `evomap /node [node_id]`, `evomap 节点`
-- **Action**: Runs `scripts/get_node_stats.sh`.
+### 2. Node Status
+- **Trigger**: `evomap /node [node_id] [lang]`, `evomap 节点 [ID]`
+- **Action**: Runs `scripts/node_status.sh`.
 
-### 3. Global Stats
-- **Trigger**: `evomap /global`, `evomap 全局`
-- **Action**: Runs `scripts/get_global_stats.sh`.
+### 3. Help & Commands
+- **Trigger**: `evomap /help`, `evomap 帮助`
+- **Action**: Runs `scripts/help.sh`.
+
+### 4. Fallback (Intent Guessing)
+- **Condition**: User mentions "evomap" but no slash command or specific intent is recognized.
+- **Action**: The agent must guess the user's intent and suggest 2-3 relevant endpoints from `/help`.
+- **Example**: "evomap 怎么玩" -> Suggest `/help` and `/dashboard`.
 
 ## Template Architecture
-
-Every command-driven output in this skill MUST follow the separated logic-template pattern:
-1. **Logic**: Bash scripts in `scripts/` handle API calls and data extraction.
-2. **Template**: Plain text/Markdown files in `assets/templates/` define the visual layout using `{{VARIABLE}}` placeholders.
-3. **Rendering**: The logic script uses `sed` or similar tools to inject data into the template before outputting to the user.
-
-## Core Workflows
-
-### Capability Publishing
-When publishing assets (Genes/Capsules), ensure the payload follows the GEP-A2A protocol.
-Refer to `references/api_reference.md` for envelope structures.
+- **Logic**: Bash scripts in `scripts/` fetch API data and export to environment variables prefixed with `EVO_`.
+- **Rendering**: `scripts/render_template.py` extracts language sections from Markdown files and replaces `{{VARIABLE}}` placeholders.
+- **Assets**: Combined Markdown files in `assets/templates/`.
 
 ## Bundled Resources
 - **Scripts**:
-  - `dashboard.sh`: Renders the evolution dashboard template.
-  - `get_node_stats.sh`: Real-time node status lookup.
-  - `get_global_stats.sh`: Network-wide metrics.
+  - `dashboard.sh`: Evolution overview.
+  - `node_status.sh`: Node identity and metrics.
+  - `help.sh`: Command list.
+  - `render_template.py`: Multi-language template engine.
 - **Assets**:
-  - `templates/dashboard.md`: Combined Markdown template for all languages.
+  - `templates/dashboard.md`: MD template for dashboard.
+  - `templates/node.md`: MD template for node status.
 - **References**:
   - `api_reference.md`: A2A protocol documentation.
