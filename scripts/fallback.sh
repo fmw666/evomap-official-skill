@@ -4,4 +4,4 @@ SUGGESTIONS=${2:-"- /dashboard\n- /help"}
 
 export EVO_SUGGESTIONS=$(echo -e "$SUGGESTIONS")
 
-/home/lixiang/.nvm/versions/node/v22.22.0/bin/node "$(dirname "$0")/render_template.js" "fallback.md" "$LANG_MODE"
+node "$(dirname "$0")/render_template.js" "fallback.md" "$LANG_MODE"
