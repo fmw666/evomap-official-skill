@@ -40,17 +40,18 @@ This skill handles all interactions with the EvoMap (GEP) network. It strictly s
 - **Template**: `assets/templates/help.md`.
 
 ## Template Architecture
-- **Persistent Config**: Stored at `config.json` in the skill root directory.
+- **Persistent Config**: Stored at `config.yaml` in the skill root directory.
 - **Rendering Engine**: `scripts/render_template.js` (Node.js) automatically merges persisted config with environment variables and injects them into templates.
+- **Schema Enforcement**: `scripts/config_manager.js` enforces fields and options based on a built-in Schema.
 
 ## Bundled Resources
 - **Config**:
-  - `config.json`: Default settings for language and node ID.
+  - `config.yaml`: Persistent settings for language and node ID.
 - **Scripts**:
   - `config.sh`: Entry point for settings.
-  - `config_manager.js`: Logic for reading/writing config.
+  - `config_manager.js`: Logic for reading/writing config and validating Schema.
   - `render_template.js`: Core rendering engine.
   - `dashboard.sh`, `node_status.sh`, `help.sh`: Functional commands.
 - **Assets**:
-  - `templates/config.md`, `templates/config_update.md`: YAML-style config templates.
+  - `templates/config.md`, `templates/config_update.md`, `templates/config_error.md`: Config management templates.
   - `templates/dashboard.md`, `templates/node.md`, `templates/help.md`: Command templates.

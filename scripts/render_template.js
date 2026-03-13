@@ -2,14 +2,17 @@ const fs = require('fs');
 const path = require('path');
 
 function loadConfig() {
-    // Look for config.json in the skill root (one level up from scripts/)
-    const configPath = path.join(__dirname, '..', 'config.json');
+    const configPath = path.join(__dirname, '..', 'config.yaml');
     if (fs.existsSync(configPath)) {
-        try {
-            return JSON.parse(fs.readFileSync(configPath, 'utf8'));
-        } catch (e) {
-            return {};
-        }
+        const config = {};
+        const content = fs.readFileSync(configPath, 'utf8');
+        content.split('\n').forEach(line => {
+            const parts = line.split(':');
+            if (parts.length >= 2) {
+                config[parts[0].trim()] = parts.slice(1).join(':').trim();
+            }
+        });
+        return config;
     }
     return {};
 }
@@ -18,10 +21,8 @@ function render() {
     const templateName = process.argv[2];
     let query = process.argv[3] || '';
     
-    // 1. Load Persisted Config
     const config = loadConfig();
     
-    // 2. Determine Language (Priority: Query > Config > Default)
     let lang = config.language || 'en';
     if (query && /[\u4e00-\u9fa5]/.test(query)) {
         lang = 'zh';
@@ -53,7 +54,6 @@ function render() {
 
     let template = outputLines.join('\n');
     
-    // 3. Prepare Data Context (Config + Env)
     const context = { ...config };
     for (const key in process.env) {
         if (key.startsWith('EVO_')) {
@@ -61,7 +61,6 @@ function render() {
         }
     }
     
-    // 4. Inject Variables
     for (const key in context) {
         const regex = new RegExp(`{{${key}}}`, 'g');
         template = template.replace(regex, context[key]);

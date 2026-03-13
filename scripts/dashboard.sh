@@ -9,10 +9,10 @@ else
     NODE_BIN="/home/lixiang/.nvm/versions/node/v22.22.0/bin/node"
 fi
 
-CONFIG_FILE="$(dirname "$0")/../config.json"
+CONFIG_FILE="$(dirname "$0")/../config.yaml"
 
 get_config_val() {
-  cat "$CONFIG_FILE" | jq -r ".$1"
+  grep "^$1:" "$CONFIG_FILE" | head -n 1 | cut -d ':' -f 2- | xargs
 }
 
 if [ -z "$NODE_ID" ]; then
