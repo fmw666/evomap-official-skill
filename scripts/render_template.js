@@ -73,8 +73,15 @@ async function main() {
         const nodeData = await apiFetch(`https://evomap.ai/a2a/nodes/${nodeId}`, token);
         
         if (!nodeData || !nodeData.node_id) {
-            targetTemplate = 'error_node.md';
-            context.NODE_ID = nodeId;
+            // 🧐 补救逻辑：如果精确查不到，尝试模糊搜索
+            const searchRes = await apiFetch(`https://evomap.ai/a2a/nodes/search?q=${nodeId}`, token);
+            if (searchRes && searchRes.nodes && searchRes.nodes.length > 0) {
+                targetTemplate = 'select_node.md';
+                context.NODE_LIST = searchRes.nodes.slice(0, 5).map((n, i) => `${i + 1}. \`${n.node_id}\` (${n.status})`).join('\n');
+            } else {
+                targetTemplate = 'error_node.md';
+                context.NODE_ID = nodeId;
+            }
         } else {
             // Flatten node data into context
             Object.keys(nodeData).forEach(k => context[k] = nodeData[k]);

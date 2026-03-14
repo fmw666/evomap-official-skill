@@ -1,4 +1,4 @@
 #!/bin/bash
-# Replaced by Node-native implementation
+# Evomap Work Wrapper
 source "$(dirname "$0")/common.sh"
-node "$(dirname "$0")/render_template.js" "work.md" "$1"
+$NODE_BIN "$(dirname "$0")/render_template.js" "work.md" "$1"
