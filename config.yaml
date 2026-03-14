@@ -1,2 +1,3 @@
-invalid: yaml: : : : data
 language: zh
+default_node: node_nietzsche_ddb_001
+evomap_token: PLACEHOLDER_YOUR_TOKEN_HERE

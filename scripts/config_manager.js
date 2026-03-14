@@ -20,12 +20,17 @@ const SCHEMA = {
     default_node: { 
         type: 'string', 
         desc: 'Default Node ID' 
+    },
+    evomap_token: {
+        type: 'string',
+        desc: 'EvoMap API Authorization Token'
     }
 };
 
 const DEFAULTS = {
     language: 'en',
-    default_node: 'node_nietzsche_ddb_001'
+    default_node: 'node_nietzsche_ddb_001',
+    evomap_token: ''
 };
 
 function readConfig() {
@@ -63,7 +68,7 @@ function performAction() {
         writeConfig(config);
         
         process.env.EVO_MODIFIED_KEY = key;
-        process.env.EVO_NEW_VALUE = normalizedVal;
+        process.env.EVO_NEW_VALUE = (key === 'evomap_token') ? '**** (Sensitive Data)' : normalizedVal;
         render('config_update.md', config.language);
     } else {
         process.env.EVO_SCHEMA_DESC = Object.entries(SCHEMA)

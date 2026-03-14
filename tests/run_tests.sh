@@ -11,7 +11,7 @@ log_step "Static Analysis: JS Syntax Validation"
 node --check "$SCRIPTS_DIR"/*.js
 log_success "Syntax verification complete."
 
-# 2. Functional Rendering (Mocked State)
+# 2. Rendering Unit Tests (Mocked State)
 log_step "Functional: Multi-language Rendering"
 
 export EVO_NODE_ID="archon_test_001"
