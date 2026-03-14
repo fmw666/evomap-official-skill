@@ -19,6 +19,10 @@ const SCHEMA = {
     default_node: { 
         type: 'string', 
         desc: 'Default Node ID' 
+    },
+    node_path: {
+        type: 'string',
+        desc: 'Custom Node.js binary path (Optional)'
     }
 };
 
@@ -74,6 +78,7 @@ function performAction() {
 
 function render(template, lang) {
     try {
+        // Use current process binary to ensure consistency
         const output = execSync(`${process.argv[0]} ${path.join(__dirname, 'render_template.js')} ${template} ${lang}`, { env: process.env });
         process.stdout.write(output);
     } catch (e) {

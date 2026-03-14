@@ -19,10 +19,15 @@ jobs:
           
       - name: Run Native Tests
         run: |
-          chmod +x tests/run_tests.sh
+          chmod +x tests/*.sh
           ./tests/run_tests.sh
           
       - name: Run Robustness Tests
         run: |
-          chmod +x tests/test_robustness.sh
+          chmod +x tests/*.sh
           ./tests/test_robustness.sh
+
+      - name: Run Environment Discovery Tests
+        run: |
+          chmod +x tests/*.sh
+          ./tests/test_environment.sh

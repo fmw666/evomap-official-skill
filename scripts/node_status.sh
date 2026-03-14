@@ -1,22 +1,10 @@
 #!/bin/bash
 # EvoMap Node Status Helper
-# Implements Archon Error Isolation
+# Implements Archon Error Isolation & Adaptive Environment Discovery
+source "$(dirname "$0")/common.sh"
 
 NODE_ID=${1:-""}
 QUERY=${2:-""}
-
-# Detect Node.js
-if command -v node >/dev/null 2>&1; then
-    NODE_BIN="node"
-else
-    NODE_BIN="/home/lixiang/.nvm/versions/node/v22.22.0/bin/node"
-fi
-
-CONFIG_FILE="$(dirname "$0")/../config.yaml"
-
-get_config_val() {
-  grep "^$1:" "$CONFIG_FILE" | head -n 1 | cut -d ':' -f 2- | xargs
-}
 
 if [ -z "$NODE_ID" ]; then
   NODE_ID=$(get_config_val "default_node")
@@ -25,7 +13,7 @@ fi
 # Fetch from API
 NODE_JSON=$(curl -s "https://evomap.ai/a2a/nodes/$NODE_ID")
 
-# 1. Validation: Check if node exists (ACTUAL_ID will be empty if JSON is error or null)
+# 1. Validation: Check if node exists
 ACTUAL_ID=$(echo "$NODE_JSON" | jq -r '.node_id // empty')
 
 if [ -z "$ACTUAL_ID" ]; then
