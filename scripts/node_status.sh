@@ -1,6 +1,6 @@
 #!/bin/bash
 # EvoMap Node Status Helper
-# Implements Archon Error Isolation & Adaptive Environment Discovery
+# Implements Archon Error Isolation & POSIX PATH Standard
 source "$(dirname "$0")/common.sh"
 
 NODE_ID=${1:-""}
@@ -19,7 +19,7 @@ ACTUAL_ID=$(echo "$NODE_JSON" | jq -r '.node_id // empty')
 if [ -z "$ACTUAL_ID" ]; then
     # ERROR BRANCH: Trigger dedicated error template
     export EVO_NODE_ID="$NODE_ID"
-    $NODE_BIN "$(dirname "$0")/render_template.js" "error_node.md" "$QUERY"
+    node "$(dirname "$0")/render_template.js" "error_node.md" "$QUERY"
     exit 0
 fi
 
@@ -34,4 +34,4 @@ export EVO_STATUS=$(echo "$NODE_JSON" | jq -r '.status // "unknown"')
 export EVO_ONLINE=$(echo "$NODE_JSON" | jq -r '.online // "false"')
 export EVO_LAST_SEEN=$(echo "$NODE_JSON" | jq -r '.last_seen_at // "never"')
 
-$NODE_BIN "$(dirname "$0")/render_template.js" "node.md" "$QUERY"
+node "$(dirname "$0")/render_template.js" "node.md" "$QUERY"

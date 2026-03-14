@@ -15,4 +15,4 @@ export EVO_G_REUSES=$(echo "$GLOBAL_JSON" | jq -r '.total_reuses // 0')
 export EVO_G_VIEWS=$(echo "$GLOBAL_JSON" | jq -r '.total_views // 0')
 export EVO_G_TODAY=$(echo "$GLOBAL_JSON" | jq -r '.today_calls // 0')
 
-$NODE_BIN "$(dirname "$0")/render_template.js" "global.md" "$QUERY"
+node "$(dirname "$0")/render_template.js" "global.md" "$QUERY"

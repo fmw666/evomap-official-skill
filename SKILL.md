@@ -44,13 +44,21 @@ The skill enforces "Architectural Purity" in error handling:
 - **Action**: Runs `scripts/help.sh`.
 - **Template**: `help.md`.
 
+### 6. Fallback (Intent Guessing)
+- **Condition**: No specific command matched.
+- **Trigger**: Keyword "evomap" found but no command matches.
+- **Action**: Runs `scripts/fallback.sh`.
+- **Template**: `assets/templates/fallback.md`.
+
 ## Template Architecture
+- **POSIX Standard**: All Node.js scripts use `#!/usr/bin/env node` and rely on system `PATH`, ensuring "zero-config" environment discovery.
 - **Persistent Config**: Stored at `config.yaml` in the skill root directory.
 - **Rendering Engine**: `scripts/render_template.js` (Node.js) merges persisted config with environment variables and injects them into templates.
+- **Schema Enforcement**: `scripts/config_manager.js` validates all configuration updates.
 
 ## Bundled Resources
 - **Config**: `config.yaml`
-- **Scripts**: `config.sh`, `config_manager.js`, `render_template.js`, `dashboard.sh`, `node_status.sh`, `help.sh`, `get_global_stats.sh`, `fallback.sh`.
+- **Scripts**: `config.sh`, `config_manager.js`, `render_template.js`, `dashboard.sh`, `node_status.sh`, `help.sh`, `get_global_stats.sh`, `fallback.sh`, `common.sh`.
 - **Assets**: 
     - Command Templates: `dashboard.md`, `node.md`, `global.md`, `help.md`, `fallback.md`.
     - Error/Choice Templates: `error_node.md`, `select_node.md`, `config_error.md`, `config_update.md`.

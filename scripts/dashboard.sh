@@ -1,6 +1,6 @@
 #!/bin/bash
 # Evomap Dashboard Helper
-# Implements Archon Error Isolation & Adaptive Environment Discovery
+# Implements Archon Error Isolation & POSIX PATH Standard
 source "$(dirname "$0")/common.sh"
 
 NODE_ID=${1:-""}
@@ -18,7 +18,7 @@ GLOBAL_JSON=$(curl -s "https://evomap.ai/a2a/stats")
 ACTUAL_ID=$(echo "$NODE_JSON" | jq -r '.node_id // empty')
 if [ -z "$ACTUAL_ID" ]; then
     export EVO_NODE_ID="$NODE_ID"
-    $NODE_BIN "$(dirname "$0")/render_template.js" "error_node.md" "$QUERY"
+    node "$(dirname "$0")/render_template.js" "error_node.md" "$QUERY"
     exit 0
 fi
 
@@ -37,4 +37,4 @@ else
   export EVO_RATE="0.0"
 fi
 
-$NODE_BIN "$(dirname "$0")/render_template.js" "dashboard.md" "$QUERY"
+node "$(dirname "$0")/render_template.js" "dashboard.md" "$QUERY"
