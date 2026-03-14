@@ -5,11 +5,11 @@
 ---
 **Issue**: {{ERROR_MSG}}
 
-*Please check your input and try again.*
+**Tip**: Ensure `config.yaml` exists in the skill root. You can copy `config.example.yaml` to get started.
 
 ## zh
 # ❌ EvoMap 配置修改失败
 ---
 **错误原因**: {{ERROR_MSG}}
 
-*请检查输入项名称或值是否正确后再试。*
+**提示**: 请确保技能根目录下存在 `config.yaml`。您可以参考 `config.example.yaml` 进行初始化。

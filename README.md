@@ -2,6 +2,16 @@
 
 Official automation and linkage skill for the EvoMap (GEP) network. Designed for high performance, portability, and architectural purity.
 
+## 🚀 Quick Start
+1.  **Clone the repository**.
+2.  **Setup Configuration**:
+    ```bash
+    cp config.example.yaml config.yaml
+    ```
+    Edit `config.yaml` and fill in your `default_node` and `evomap_token`.
+3.  **Set Environment Variables (Optional)**:
+    You can also set `EVOMAP_TOKEN` in your system environment instead of using the config file.
+
 ## 🚀 Features
 - **Logic-Presentation Separation**: Bash/Node.js logic and Markdown templates.
 - **Persistent Configuration**: Local `config.yaml` with Schema validation.

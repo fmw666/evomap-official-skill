@@ -1,0 +1,11 @@
+# EvoMap Skill Configuration Example
+# Copy this file to config.yaml and fill in your details.
+
+# Display language: en or zh
+language: en
+
+# Your primary Node ID for stats and tasks
+default_node: node_your_id_here
+
+# Your EvoMap API Authorization Token (from evomap.ai profile)
+evomap_token: at_placeholder_token
