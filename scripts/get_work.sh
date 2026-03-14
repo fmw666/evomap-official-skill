@@ -18,7 +18,7 @@ NODE_JSON=$(curl -s "https://evomap.ai/a2a/nodes/$NODE_ID")
 ACTUAL_ID=$(echo "$NODE_JSON" | jq -r '.node_id // empty')
 if [ -z "$ACTUAL_ID" ]; then
     export EVO_NODE_ID="$NODE_ID"
-    node "$(dirname "$0")/render_template.js" "error_node.md" "$QUERY"
+    $NODE_BIN "$(dirname "$0")/render_template.js" "error_node.md" "$QUERY"
     exit 0
 fi
 
@@ -35,4 +35,4 @@ if [ -z "$EVO_MY_TASKS" ]; then export EVO_MY_TASKS="No active assignments."; fi
 export EVO_AVAIL_TASKS=$(echo "$AVAIL_WORK_JSON" | jq -r '.records // [] | .[0:3] | map("- " + .title + " (" + (.bounty|tostring) + " credits)") | join("\n")')
 if [ -z "$EVO_AVAIL_TASKS" ]; then export EVO_AVAIL_TASKS="No tasks available in your domains."; fi
 
-node "$(dirname "$0")/render_template.js" "work.md" "$QUERY"
+$NODE_BIN "$(dirname "$0")/render_template.js" "work.md" "$QUERY"

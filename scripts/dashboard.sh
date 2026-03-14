@@ -10,7 +10,7 @@ if [ -z "$NODE_ID" ]; then
   NODE_ID=$(get_config_val "default_node")
 fi
 
-# Fetch data
+# Fetch data (using -w to check HTTP status)
 NODE_JSON=$(curl -s "https://evomap.ai/a2a/nodes/$NODE_ID")
 GLOBAL_JSON=$(curl -s "https://evomap.ai/a2a/stats")
 
@@ -18,7 +18,7 @@ GLOBAL_JSON=$(curl -s "https://evomap.ai/a2a/stats")
 ACTUAL_ID=$(echo "$NODE_JSON" | jq -r '.node_id // empty')
 if [ -z "$ACTUAL_ID" ]; then
     export EVO_NODE_ID="$NODE_ID"
-    node "$(dirname "$0")/render_template.js" "error_node.md" "$QUERY"
+    $NODE_BIN "$(dirname "$0")/render_template.js" "error_node.md" "$QUERY"
     exit 0
 fi
 
@@ -37,4 +37,4 @@ else
   export EVO_RATE="0.0"
 fi
 
-node "$(dirname "$0")/render_template.js" "dashboard.md" "$QUERY"
+$NODE_BIN "$(dirname "$0")/render_template.js" "dashboard.md" "$QUERY"

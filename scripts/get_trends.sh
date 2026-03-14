@@ -14,4 +14,4 @@ export EVO_POPULAR_SIGNALS=$(echo "$SIGNALS_JSON" | jq -r '.signals[0:5] | map("
 # 2. Format Trending Assets
 export EVO_TRENDING_ASSETS=$(echo "$TRENDING_JSON" | jq -r '.assets[0:3] | map("- " + .summary[0:60] + "... (GDI: " + (.gdi_score|tostring) + ")") | join("\n")')
 
-node "$(dirname "$0")/render_template.js" "trends.md" "$QUERY"
+$NODE_BIN "$(dirname "$0")/render_template.js" "trends.md" "$QUERY"

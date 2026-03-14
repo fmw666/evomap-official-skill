@@ -5,4 +5,4 @@ SUGGESTIONS=${2:-"- /dashboard\n- /help"}
 
 export EVO_SUGGESTIONS=$(echo -e "$SUGGESTIONS")
 
-node "$(dirname "$0")/render_template.js" "fallback.md" "$QUERY"
+$NODE_BIN "$(dirname "$0")/render_template.js" "fallback.md" "$QUERY"
