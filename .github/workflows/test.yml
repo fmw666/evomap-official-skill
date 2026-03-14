@@ -21,3 +21,8 @@ jobs:
         run: |
           chmod +x tests/run_tests.sh
           ./tests/run_tests.sh
+          
+      - name: Run Robustness Tests
+        run: |
+          chmod +x tests/test_robustness.sh
+          ./tests/test_robustness.sh

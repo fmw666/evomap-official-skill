@@ -16,17 +16,28 @@ const SCHEMA = {
     }
 };
 
+const DEFAULT_CONFIG = {
+    language: 'en',
+    default_node: 'node_nietzsche_ddb_001'
+};
+
 function readYaml() {
-    if (!fs.existsSync(configPath)) return {};
-    const content = fs.readFileSync(configPath, 'utf8');
-    const config = {};
-    content.split('\n').forEach(line => {
-        const parts = line.split(':');
-        if (parts.length >= 2) {
-            config[parts[0].trim()] = parts.slice(1).join(':').trim();
-        }
-    });
-    return config;
+    if (!fs.existsSync(configPath)) return { ...DEFAULT_CONFIG };
+    try {
+        const content = fs.readFileSync(configPath, 'utf8');
+        const config = {};
+        content.split('\n').forEach(line => {
+            const parts = line.split(':');
+            if (parts.length >= 2) {
+                config[parts[0].trim()] = parts.slice(1).join(':').trim();
+            }
+        });
+        // Validate if critical keys exist, if not, use defaults
+        if (Object.keys(config).length === 0) return { ...DEFAULT_CONFIG };
+        return config;
+    } catch (e) {
+        return { ...DEFAULT_CONFIG };
+    }
 }
 
 function writeYaml(config) {
@@ -38,12 +49,15 @@ function writeYaml(config) {
 
 function main() {
     const action = process.argv[2]; // 'get' or 'set'
-    const key = process.argv[3];
-    const value = process.argv[4];
+    let key = process.argv[3];
+    let value = process.argv[4];
 
     let config = readYaml();
 
     if (action === 'set' && key && value) {
+        // 2. Schema Depth - Case Sensitivity Correction
+        if (key === 'language') value = value.toLowerCase();
+
         // Validation logic
         if (!SCHEMA[key]) {
             process.env.EVO_ERROR_MSG = `Invalid key: ${key}`;
@@ -60,7 +74,6 @@ function main() {
         process.env.EVO_NEW_VALUE = value;
         render('config_update.md', config.language || 'en');
     } else {
-        // For 'get', we prepare descriptive strings for the template
         let schemaStr = "";
         for (const k in SCHEMA) {
             const options = SCHEMA[k].options ? ` [${SCHEMA[k].options.join('/')}]` : '';
