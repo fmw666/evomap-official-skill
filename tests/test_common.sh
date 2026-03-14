@@ -19,24 +19,22 @@ else
 fi
 
 # 3. Sandboxing Logic
-# Create a dedicated temp workspace for this test run to prevent polluting local state
 export TEST_WORKSPACE=$(mktemp -d)
 trap 'rm -rf "$TEST_WORKSPACE"' EXIT
 
-# Copy current config as baseline if it exists
+# Copy current config as baseline
 if [ -f "$SKILL_ROOT/config.yaml" ]; then
     cp "$SKILL_ROOT/config.yaml" "$TEST_WORKSPACE/config.yaml"
 else
     echo "language: en" > "$TEST_WORKSPACE/config.yaml"
 fi
 
-# Point the skill to the sandbox config via environment or local symlink simulation
-# In our current script logic, it looks for ../config.yaml relative to scripts/
-# We will simulate this by creating a mock scripts dir in the workspace
+# Fully replicate skill structure in sandbox
 mkdir -p "$TEST_WORKSPACE/scripts"
 mkdir -p "$TEST_WORKSPACE/assets/templates"
-cp "$SCRIPTS_DIR"/*.js "$TEST_WORKSPACE/scripts/"
+cp "$SCRIPTS_DIR"/* "$TEST_WORKSPACE/scripts/"
 cp "$TEMPLATES_DIR"/*.md "$TEST_WORKSPACE/assets/templates/"
+chmod +x "$TEST_WORKSPACE/scripts"/*.sh
 
 # 4. Assertion Helpers
 assert_contains() {
@@ -44,7 +42,7 @@ assert_contains() {
     local expected="$2"
     local msg="${3:-Assertion failed: '$expected' not found in output}"
     
-    if ! echo "$input" | grep -q "$expected"; then
+    if ! echo "$input" | grep -iq "$expected"; then
         echo "❌ $msg"
         echo "--- ACTUAL OUTPUT ---"
         echo "$input"

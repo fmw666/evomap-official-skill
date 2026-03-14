@@ -27,13 +27,14 @@ $NODE_BIN "$TEST_WORKSPACE/scripts/config_manager.js" "set" "language" "ZH" > /d
 assert_contains "$(cat "$TEST_WORKSPACE/config.yaml")" "language: zh" "Sanitization: Case conversion failed"
 log_success "Schema enforcement verified."
 
-# 4. API Signal Instability (Failing Downstream)
-log_step "Resilience: API Downstream Instability (Empty/Null Response)"
-# Mocking a catastrophic API failure by passing a non-existent node ID 
-# which causes the Logic layer to get empty data.
-# We point to the real scripts but execute in a context that mimics logic failure
-OUTPUT=$($SKILL_ROOT/scripts/dashboard.sh "node_corrupted_id_000" "en")
-assert_contains "$OUTPUT" "0" "Instability: Dashboard crashed on empty API response"
-log_success "API data instability handled."
+# 4. API Signal Instability (Error Isolation Logic)
+log_step "Resilience: Node Not Found (Archon Error Isolation)"
+# Force language to en for predictable assertion
+$NODE_BIN "$TEST_WORKSPACE/scripts/config_manager.js" "set" "language" "en" > /dev/null
+# Run the sandboxed script
+OUTPUT=$($TEST_WORKSPACE/scripts/node_status.sh "node_imaginary_id_404" "en")
+assert_contains "$OUTPUT" "Node Not Found" "Error Isolation: Failed to trigger error template for missing node"
+assert_contains "$OUTPUT" "node_imaginary_id_404" "Error Isolation: Failed to inject invalid ID into error template"
+log_success "Node-not-found isolation verified."
 
 echo "🎉 Resilience Stress Tests: PASSED"
