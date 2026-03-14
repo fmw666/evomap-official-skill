@@ -1,68 +1,47 @@
 #!/bin/bash
 # ---------------------------------------------------------------------------
-# EvoMap Skill Native Test Runner (Dependency-Free)
+# EvoMap Skill Core Test Suite - "Architectural Purity Version"
 # ---------------------------------------------------------------------------
+source "$(dirname "$0")/test_common.sh"
 
-SKILL_DIR="$(dirname "$0")/.."
-SCRIPTS_DIR="$SKILL_DIR/scripts"
+echo "🚀 Initiating Archon Core Validation..."
 
-# Detect Node.js
-if command -v node >/dev/null 2>&1; then
-    NODE_BIN="node"
-else
-    NODE_BIN="/home/lixiang/.nvm/versions/node/v22.22.0/bin/node"
-fi
+# 1. Static Analysis (Syntax)
+log_step "Static Analysis: JS Syntax Validation"
+$NODE_BIN --check "$SCRIPTS_DIR"/*.js
+log_success "Syntax verification complete."
 
-echo "🚀 Starting Native Tests..."
+# 2. Functional Rendering (Mocked State)
+log_step "Functional: Multi-language Rendering"
 
-# 1. Syntax Check (Lint)
-echo "[1/3] Checking JS Syntax..."
-$NODE_BIN --check "$SCRIPTS_DIR"/*.js || exit 1
-
-# 2. Rendering Unit Tests (Mock Environment)
-echo "[2/3] Testing Template Rendering (English)..."
-export EVO_NODE_ID="test_node_001"
+export EVO_NODE_ID="archon_test_001"
 export EVO_REP="99.99"
 export EVO_STATUS="active"
 export EVO_PUB="100"
 export EVO_PROM="90"
 export EVO_RATE="90.0"
-export EVO_G_ASSETS="500000"
-export EVO_G_NODES="50000"
+export EVO_G_ASSETS="777777"
+export EVO_G_NODES="88888"
 
-OUTPUT_EN=$($NODE_BIN "$SCRIPTS_DIR/render_template.js" "dashboard.md" "en")
-if echo "$OUTPUT_EN" | grep -q "99.99" && echo "$OUTPUT_EN" | grep -q "test_node_001"; then
-    echo "  ✅ English Rendering passed."
-else
-    echo "  ❌ English Rendering failed."
-    echo "$OUTPUT_EN"
-    exit 1
-fi
+# Test EN
+OUTPUT_EN=$($NODE_BIN "$TEST_WORKSPACE/scripts/render_template.js" "dashboard.md" "en")
+assert_contains "$OUTPUT_EN" "archon_test_001" "EN: Failed to render Node ID"
+assert_contains "$OUTPUT_EN" "99.99" "EN: Failed to render Reputation"
+log_success "English template verified."
 
-echo "[2/3] Testing Template Rendering (Chinese)..."
-OUTPUT_ZH=$($NODE_BIN "$SCRIPTS_DIR/render_template.js" "dashboard.md" "zh")
-if echo "$OUTPUT_ZH" | grep -q "声望评分" && echo "$OUTPUT_ZH" | grep -q "99.99"; then
-    echo "  ✅ Chinese Rendering passed."
-else
-    echo "  ❌ Chinese Rendering failed."
-    echo "$OUTPUT_ZH"
-    exit 1
-fi
+# Test ZH
+OUTPUT_ZH=$($NODE_BIN "$TEST_WORKSPACE/scripts/render_template.js" "dashboard.md" "zh")
+assert_contains "$OUTPUT_ZH" "声望评分" "ZH: Template block mismatch"
+assert_contains "$OUTPUT_ZH" "99.99" "ZH: Data injection failed"
+log_success "Chinese template verified."
 
-# 3. Config Manager Tests
-echo "[3/3] Testing Config Management..."
-# Backup existing config
-[ -f "$SKILL_DIR/config.yaml" ] && cp "$SKILL_DIR/config.yaml" "$SKILL_DIR/config.yaml.bak"
+# 3. Config Integrity
+log_step "Integrity: Persistent Configuration Management"
 
-$NODE_BIN "$SCRIPTS_DIR/config_manager.js" "set" "language" "zh" > /dev/null
-if grep -q "language: zh" "$SKILL_DIR/config.yaml"; then
-    echo "  ✅ Config Update passed."
-else
-    echo "  ❌ Config Update failed."
-    exit 1
-fi
+# Update in sandbox
+$NODE_BIN "$TEST_WORKSPACE/scripts/config_manager.js" "set" "language" "zh" > /dev/null
+assert_contains "$(cat "$TEST_WORKSPACE/config.yaml")" "language: zh" "Config: Failed to persist update"
 
-# Restore backup
-[ -f "$SKILL_DIR/config.yaml.bak" ] && mv "$SKILL_DIR/config.yaml.bak" "$SKILL_DIR/config.yaml"
+log_success "Configuration persistence verified."
 
-echo "🎉 All tests passed successfully!"
+echo "🎉 Archon Core Validation: PASSED"
